@@ -27,7 +27,16 @@ body{
     height: 100%;
     z-index: 1000;
     top : 1rem;
+    animation: bl 3s;
+}
 
+@keyframes bl{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 0.9;
+    }
 }
 
 .leads{
@@ -40,13 +49,13 @@ body{
 .score{
     position: absolute;
     left : 1rem;
-    top : 0.1rem;
+    top : 5rem;
 }
 
 .heart{
     position: absolute;
     left: 1rem;
-    top : 2.5rem;
+    top : 8.5rem;
 }
 
 #name{
@@ -62,6 +71,11 @@ body{
 
 #nameh{
     font-size: 2rem;
+    margin-top: 5rem;
+}
+
+#name{
+    margin-top: 5rem;
 }
 
 .but{
@@ -124,3 +138,46 @@ li{
     color: white;
     text-decoration: underline;
 }
+
+.blink{
+    animation: blinker 2.5s linear infinite;
+}
+
+
+@keyframes blinker{
+    0%{
+        opacity: 1;
+    }
+    10%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+};
+
+.spikes{
+    position: fixed;
+    z-index: 10000000;
+}
+
+.over{
+    position: absolute;
+    top : 60%;
+    bottom: 40%;
+    left: 35%;
+    right:50%;
+    font-size: 5rem;
+    animation: gover 3s;
+    z-index: 1000000;
+}
+
+@keyframes gover {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+

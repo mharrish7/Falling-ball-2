@@ -13,10 +13,10 @@ var a2;
 var a3;
 var a4;
 var ups = 1;
-
+var re = 0;
 var hearts = 3;
 
-
+document.querySelector('.over').style.display = 'none';
 
 var j = ups + 1;
 
@@ -24,7 +24,7 @@ document.querySelector('#lead').style.display = 'none';
 
 
 document.querySelector('.but').addEventListener('click', function () {
-    hearts = 3;
+    hearts = 3 + re;
     a1 = setInterval(move, 1);
     a4 = setInterval(moveup, 1);
     a2 = setInterval(checkinter, 1);
@@ -90,6 +90,9 @@ function move() {
         }
     }
     jumps -= gravity;
+    if (jumps < -3) {
+        jumps = -3;
+    }
     moves();
 }
 
@@ -132,6 +135,10 @@ var pp = [];
 var ps = []
 var slist = []
 
+
+
+
+
 function setplat() {
 
     var plat = document.createElement('div');
@@ -142,9 +149,34 @@ function setplat() {
     plat.style.backgroundColor = "red";
     plat.style.width = "15rem";
     plat.style.height = "2rem";
+    plat.style.zIndex = "0";
+
     platlist.push(plat);
     plat.setAttribute('class', 'plate');
     document.querySelector('body').appendChild(plat);
+
+
+    var rr = Math.floor(Math.random() * 3);
+    if (rr == 0) {
+        var plat = document.createElement('div');
+        plat.style.top = 40 + "rem";
+        plat.style.position = "absolute";
+        var ran = Math.floor(Math.random() * 7);
+        plat.style.left = 10 * (ran + 1) + "rem";
+        plat.style.backgroundColor = "red";
+        plat.style.width = "15rem";
+        plat.style.height = "2rem";
+        platlist.push(plat);
+        plat.setAttribute('class', 'plate');
+        document.querySelector('body').appendChild(plat);
+
+    }
+
+    var r5 = Math.floor(Math.random() * 15);
+    if (r5 == 0) {
+        plat.classList.add('blink');
+        console.log('sss');
+    }
 
     var r2 = Math.floor(Math.random() * 15);
     if (r2 == 0 && heartlist.length == 0) {
@@ -214,6 +246,10 @@ var power = 0;
 document.querySelector('.close').addEventListener('click', function () {
     document.querySelector('#lead').style.display = 'none';
     led = 0;
+    document.querySelector('#name').style.display = 'inline';
+    document.querySelector('.but').style.display = 'inline';
+    document.querySelector('.but').disabled = false;
+    document.querySelector('#nameh').innerHTML = "Enter your name : ";
 })
 
 var led = 0;
@@ -224,56 +260,137 @@ function check2(p) {
 
         if (hearts <= 0) {
             console.log('gameover');
-            document.querySelector('#name').style.display = 'inline';
-            document.querySelector('.but').style.display = 'inline';
-            document.querySelector('.but').disabled = false;
-            document.querySelector('#nameh').innerHTML = "Enter your name : ";
+            re = 1;
 
-            
+            document.querySelector('.over').style.display = 'block';
+            setTimeout(function () {
+                document.querySelector('.over').style.display = 'none';
+
+                if (led == 0) { 
+                    var keys = Object.keys(localStorage);
+
+                    if (keys.includes(name)) {
+                        var value = parseInt(localStorage.getItem(name));
+                        if (score > value) {
+                            localStorage.setItem(name, String(score));
+                        }
+                    } else {
+                        localStorage.setItem(name, String(score));
+                    }
+
+                    var keys = Object.keys(localStorage);
+                    var scorest = [];
+                    for (i of keys) {
+                        scorest.push([parseInt(localStorage.getItem(i)), i]);
+                    }
+
+                    function sortFunction(a, b) {
+                        if (a[0] === b[0]) {
+                            return 0;
+                        } else {
+                            return (a[0] < b[0]) ? -1 : 1;
+                        }
+                    }
+                    document.getElementById('lo').innerHTML = "";
+                    scorest.sort(sortFunction);
+                    scorest.reverse();
+                    console.log(scorest);
+                    for (i of scorest) {
+                        var li = document.createElement('li');
+                        var text = document.createTextNode(i[1] + "  -  " + String(i[0]));
+                        if (i[1] == name) {
+                            li.style.backgroundColor = 'white';
+                            li.style.color = '#250d3f';
+                        }
+
+                        li.appendChild(text);
+                        document.getElementById('lo').appendChild(li);
+
+                    }
+                    document.querySelector('#lead').style.display = 'block';
+                    led = 1;
+                }
+            }, 2000);
+
+            for (p of platlist) {
+                p.style.opacity = "0%";
+                p.style.top = "0px";
+                p.style.display = 'none';
+
+                platlist.shift();
+            }
+            for (h of heartlist) {
+                h.style.opacity = '0%';
+                p.style.top = "0px";
+                p.style.display = 'none';
+
+                heartlist.shift();
+                ph.shift();
+            }
+            for (p of plist) {
+                p.style.opacity = '0%';
+                p.style.top = "0px";
+                p.style.display = 'none';
+
+                plist.shift();
+                pp.shift();
+            }
+            for (p of slist) {
+                p.style.opacity = '0%';
+                p.style.top = "0px";
+                p.style.display = 'none';
+
+                slist.shift();
+                ps.shift();
+            }
+
             clearInterval(a1);
             clearInterval(a2);
             clearInterval(a3);
             clearInterval(a4);
-            if (led == 0) {
-                var keys = Object.keys(localStorage);
 
-                if (keys.includes(name)) {
-                    var value = parseInt(localStorage.getItem(name));
-                    if (score > value) {
-                        localStorage.setItem(name, String(score));
-                    }
-                } else {
-                    localStorage.setItem(name, String(score));
-                }
 
-                var keys = Object.keys(localStorage);
-                var scorest = [];
-                for (i of keys) {
-                    scorest.push([parseInt(localStorage.getItem(i)), i]);
-                }
 
-                function sortFunction(a, b) {
-                    if (a[0] === b[0]) {
-                        return 0;
-                    } else {
-                        return (a[0] < b[0]) ? -1 : 1;
-                    }
-                }
-                document.getElementById('lo').innerHTML = "";
-                scorest.sort(sortFunction);
-                scorest.reverse();
-                console.log(scorest);
-                for (i of scorest) {
-                    var li = document.createElement('li');
-                    var text = document.createTextNode(i[1] + "  -  " + String(i[0]));
+            // if (led == 0) {
+            //     var keys = Object.keys(localStorage);
 
-                    li.appendChild(text);
-                    document.getElementById('lo').appendChild(li);
+            //     if (keys.includes(name)) {
+            //         var value = parseInt(localStorage.getItem(name));
+            //         if (score > value) {
+            //             localStorage.setItem(name, String(score));
+            //         }
+            //     } else {
+            //         localStorage.setItem(name, String(score));
+            //     }
 
-                }
-                document.querySelector('#lead').style.display = 'block';
-                led = 1;
-            }
+            //     var keys = Object.keys(localStorage);
+            //     var scorest = [];
+            //     for (i of keys) {
+            //         scorest.push([parseInt(localStorage.getItem(i)), i]);
+            //     }
+
+            //     function sortFunction(a, b) {
+            //         if (a[0] === b[0]) {
+            //             return 0;
+            //         } else {
+            //             return (a[0] < b[0]) ? -1 : 1;
+            //         }
+            //     }
+            //     document.getElementById('lo').innerHTML = "";
+            //     scorest.sort(sortFunction);
+            //     scorest.reverse();
+            //     console.log(scorest);
+            //     for (i of scorest) {
+            //         var li = document.createElement('li');
+            //         var text = document.createTextNode(i[1] + "  -  " + String(i[0]));
+
+            //         li.appendChild(text);
+            //         document.getElementById('lo').appendChild(li);
+
+            //     }
+            //     document.querySelector('#lead').style.display = 'block';
+            //     led = 1;
+            // }
 
 
         } else {
@@ -286,23 +403,31 @@ function check2(p) {
             for (p of platlist) {
                 p.style.opacity = "0%";
                 p.style.top = "0px";
+                p.style.display = 'none';
+
                 platlist.shift();
             }
             for (h of heartlist) {
                 h.style.opacity = '0%';
                 p.style.top = "0px";
+                p.style.display = 'none';
+
                 heartlist.shift();
                 ph.shift();
             }
             for (p of plist) {
                 p.style.opacity = '0%';
                 p.style.top = "0px";
+                p.style.display = 'none';
+
                 plist.shift();
                 pp.shift();
             }
             for (p of slist) {
                 p.style.opacity = '0%';
                 p.style.top = "0px";
+                p.style.display = 'none';
+
                 slist.shift();
                 ps.shift();
             }
@@ -362,12 +487,16 @@ function check2(p) {
 }
 
 
+
+
 function moveup() {
     for (p of platlist) {
         var top = parseInt(window.getComputedStyle(p).getPropertyValue('top'));
         if (top <= 10) {
+            p.classList.remove('blink');
             platlist.shift();
             p.style.opacity = "0%";
+            p.style.display = 'none';
             score += 15;
             document.querySelector('.score').innerHTML = "🔥 : " + score;
         }
@@ -378,6 +507,7 @@ function moveup() {
         if (top <= 10) {
             heartlist.shift();
             p.style.opacity = "0%";
+            p.style.display = 'none';
         }
         p.style.top = top - ups + "px";
     }
@@ -387,6 +517,8 @@ function moveup() {
         if (top <= 10) {
             plist.shift();
             p.style.opacity = "0%";
+            p.style.display = 'none';
+
         }
         p.style.top = top - ups + "px";
     }
@@ -395,13 +527,15 @@ function moveup() {
         if (top <= 10) {
             slist.shift();
             p.style.opacity = "0%";
+            p.style.display = 'none';
+
         }
         p.style.top = top - ups + "px";
     }
 }
 
 
-function cups(){
+function cups() {
     ups = 1;
 }
 
@@ -448,7 +582,7 @@ function heartcheck() {
     for (p of ps) {
         if (current == p) {
             ups = 2;
-            setTimeout(cups,2000);
+            setTimeout(cups, 2000);
             var ind = ps.indexOf(p);
             var he = slist[ind];
             if (he == undefined) {
